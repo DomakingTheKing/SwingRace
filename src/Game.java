@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class Game extends JFrame {
 
@@ -15,7 +16,11 @@ public class Game extends JFrame {
     private JPanel jpLeftColumn, jpRightColumn, jpTopBar, jpBottomBar;
     private JLabel jlPlayer0, jlPlayer1, jlSalvaGenteP0, jlSalvaGenteP1;
 
-    public Game() throws IOException {
+    private Thread Tplayer0;
+
+    Model model;
+
+    public Game() throws IOException, InterruptedException {
         initialize();
         createLayout();
         addListeners();
@@ -24,15 +29,6 @@ public class Game extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
         setResizable(false);
-
-        startGame();
-    }
-
-    private void startGame() {
-        Thread TP0 = new Thread(new Player(jlPlayer0, jlSalvaGenteP0));
-        TP0.start();
-
-        // Thread TP1 = new Thread(new Player(jlPlayer1, jlSalvaGenteP1));
     }
 
     private void initialize() throws IOException {
@@ -56,37 +52,31 @@ public class Game extends JFrame {
             }
         };
 
-        BufferedImage TopBarBG = ImageIO.read(new File("Assets/Images/TopBarBG.png"));
+        jpTopBar = new JPanel(null);
+        JLabel jlTopBarIMG = new JLabel(new ImageIcon("Assets/Images/TopBarBG.png"));
+        jlTopBarIMG.setBounds(0,0,WIDTH,100);
+        jpTopBar.add(jlTopBarIMG);
 
-        jpTopBar = new JPanel(null) {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                g.drawImage(TopBarBG, 0, 0, null);
-            }
-        };
-
-        BufferedImage BottomBarBG = ImageIO.read(new File("Assets/Images/BottomBarBG.png"));
-
-        jpBottomBar = new JPanel(null) {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                g.drawImage(BottomBarBG, 0, 0, null);
-            }
-        };
+        jpBottomBar = new JPanel(null);
+        JLabel jpBottomBarIMG = new JLabel(new ImageIcon("Assets/Images/BottomBarBG.png"));
+        jpBottomBarIMG.setBounds(0,0,WIDTH,100);
+        jpBottomBar.add(jpBottomBarIMG);
 
         jlPlayer0 = new JLabel(new ImageIcon("Assets/Images/Player0.png"));
         jlPlayer1 = new JLabel(new ImageIcon("Assets/Images/Player1.png"));
         jlSalvaGenteP0 = new JLabel(new ImageIcon("Assets/Images/SalvaGente.png"));
         jlSalvaGenteP1 = new JLabel(new ImageIcon("Assets/Images/SalvaGente.png"));
+
+        Model model = new Model();
+
+        Player p0 = new Player(this,0);
+        Player p1 = new Player(this,1);
+
     }
 
     private void createLayout() {
         jpLeftColumn.setBorder(BorderFactory.createLineBorder(new Color(101,48,25), 10));
         jpRightColumn.setBorder(BorderFactory.createLineBorder(new Color(101,48,25), 10));
-        //jpTopBar.setBorder(BorderFactory.createLineBorder(Color.YELLOW, 10));
-        //jpBottomBar.setBorder(BorderFactory.createLineBorder(Color.YELLOW, 10));
 
         jpTopBar.setPreferredSize(new Dimension(WIDTH, 100));
         add(jpTopBar, BorderLayout.NORTH);
@@ -121,6 +111,10 @@ public class Game extends JFrame {
 
         jpRightColumn.add(jlPlayer1);
         jpRightColumn.add(jlSalvaGenteP1);
+    }
+
+    public void close(){
+        dispose();
     }
 
 }
