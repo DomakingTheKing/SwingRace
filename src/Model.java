@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Model {
 
@@ -120,10 +122,18 @@ public class Model {
         int health = p.getHealth();
 
         if(health == 1){
-            //Game.close();
+            stop(p);
         } else {
             p.decreaseHealth();
             System.out.println("danno: " + p.getHealth());
         }
     }
+
+    private static void stop(Player p) {
+        System.out.println(p.getName() + " Hai perso :(");
+        System.exit(0);
+    }
+
 }
+
+
