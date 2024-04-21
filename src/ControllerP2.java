@@ -1,14 +1,14 @@
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-public class ControllerP1 implements KeyListener {
+public class ControllerP2 implements KeyListener {
 
     private Player player;
     private Model model;
     private Game game;
     private boolean started = false;
 
-    public ControllerP1(Player player) {
+    public ControllerP2(Player player) {
         this.player = player;
     }
 
@@ -16,25 +16,25 @@ public class ControllerP1 implements KeyListener {
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
 
-        if (!started && (keyCode == KeyEvent.VK_W || keyCode == KeyEvent.VK_A ||
-                keyCode == KeyEvent.VK_S || keyCode == KeyEvent.VK_D)) {
+        if (!started && (keyCode == KeyEvent.VK_UP || keyCode == KeyEvent.VK_LEFT ||
+                keyCode == KeyEvent.VK_DOWN || keyCode == KeyEvent.VK_RIGHT)) {
             started = true;
-            game.removeSalvagente(1);
+            game.removeSalvagente(2);
             game.repaint();
         }
 
         if (started) {
             switch (keyCode) {
-                case KeyEvent.VK_W:
+                case KeyEvent.VK_UP:
                     player.setPos(0);
                     break;
-                case KeyEvent.VK_A:
+                case KeyEvent.VK_LEFT:
                     player.setPos(1);
                     break;
-                case KeyEvent.VK_S:
+                case KeyEvent.VK_DOWN:
                     player.setPos(2);
                     break;
-                case KeyEvent.VK_D:
+                case KeyEvent.VK_RIGHT:
                     player.setPos(3);
                     break;
                 default:

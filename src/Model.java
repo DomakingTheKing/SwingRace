@@ -1,127 +1,108 @@
-import java.util.ArrayList;
+import javax.swing.*;
+import java.awt.*;
 import java.util.Arrays;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class Model {
 
-    private static ArrayList<Attacco> attacchiONp1;
-    private static ArrayList<Attacco> attacchiONp2;
-    private static ArrayList<Thread> threadONp1;
-    private static ArrayList<Thread> threadONp2;
+    private Player p1;
+    private Player p2;
+    private boolean gameON = false;
+    private int posto = 0;
 
-    public Model(){
-        attacchiONp1 = new ArrayList<Attacco>();
-        attacchiONp2 = new ArrayList<Attacco>();
-        threadONp1 = new ArrayList<Thread>();
-        threadONp2 = new ArrayList<Thread>();
-    }
+    private Thread p1t;
+    private Thread p2t;
 
-    public static void print(Player p) {
+    private Game game;
+    private ControllerP1 c1;
+    private ControllerP2 c2;
 
+    public void print(Player p) {
         System.out.println(p.getName() + ":");
-
-        if (p.getName().equals("p1")) {
-            for (int i = attacchiONp1.size() - 1; i > -1; i--) {
-                if (i == 0) {
-                    int[] barili = attacchiONp1.get(i).getBarili();
-                    barili[p.getPos()] = 2;
-                    System.out.println(Arrays.toString(barili));
-                } else {
-                    System.out.println(Arrays.toString(attacchiONp1.get(i).getBarili()));
-                }
+        for (int i = p.getAttacchiON().size() - 1; i >= 0; i--) {
+            int[] barili = p.getAttacchiON().get(i).getBarili();
+            if (gameON) {
+                barili[p.getPos()] = 2;
             }
+            System.out.println(Arrays.toString(barili));
+        }
+        System.out.println("----------------------------------");
+    }
 
-            System.out.println("----------------------------------");
+    public void inizMatrice(Player p) {
+        for (int i = 0; i < 3; i++) {
+            Attacco att = new Attacco();
+            Thread thread = new Thread(att);
+            thread.start();
+            p.getThreadON().add(thread);
+            p.getAttacchiON().add(att);
+        }
+        System.out.println("----------------------------------");
+    }
+
+    public void addRiga(Player p) {
+        Attacco att = new Attacco();
+        Thread thread = new Thread(att);
+        thread.start();
+        p.getThreadON().add(thread);
+        if (p.getAttacchiON().size() == 4) {
+            p.getThreadON().getFirst().interrupt();
+            p.getThreadON().removeFirst();
+            p.getAttacchiON().removeFirst();
+        }
+        p.getAttacchiON().add(att);
+        p.incrementHops();
+        checkDanno(p);
+        print(p);
+    }
+
+    public void showMatrice(Player p) {
+        for (int i = p.getAttacchiON().size() - 1; i >= 0; i--) {
+            JPanel row = new JPanel();
+            row.setLayout(new GridLayout(1, 4));
+            //row.setBorder(new LineBorder(Color.YELLOW, 5));
+            row.setName("row" + i);
+            row.setBounds(10, ((p.getAttacchiON().size() - i) * 10) + 128, 512, 128);
+            row.setOpaque(false);
+            for (int j = 0; j < 4; j++) {
+                JLabel ostacolo = getOstacolo(i, j, p);
+                row.add(ostacolo);
+            }
+            if(p.getName().equals("p1")){
+                game.jpOstacoliP1.add(row);
+            } else {
+                game.jpOstacoliP2.add(row);
+            }
+        }
+    }
+
+    public void showHearts(Player p){
+
+    }
+
+    private JLabel getOstacolo(int i, int j, Player p) {
+        JLabel ostacolo = new JLabel();
+        //ostacolo.setBorder(new LineBorder(Color.CYAN, 5));
+        ostacolo.setName("ostacoloRow" + i + "box" + j);
+        ostacolo.setSize(128, 128);
+        if (p.getAttacchiON().get(i).getBarili()[j] == 0) {
+            ostacolo.setIcon(new ImageIcon("Assets/Images/Croco.png"));
         } else {
-            for (int i = attacchiONp2.size() - 1; i > -1; i--) {
-                if (i == 0) {
-                    int[] barili = attacchiONp2.get(i).getBarili();
-                    barili[p.getPos()] = 2;
-                    System.out.println(Arrays.toString(barili));
-                } else {
-                    System.out.println(Arrays.toString(attacchiONp2.get(i).getBarili()));
-                }
-            }
-
-            System.out.println("----------------------------------");
+            ostacolo.setIcon(new ImageIcon("Assets/Images/Crate.png"));
         }
+        ostacolo.setOpaque(false);
+        return ostacolo;
     }
 
-    public static void inizMatricep1(){
-        for (int i = 0; i < 3; i++) {
-            Attacco att = new Attacco();
-            Thread thread = new Thread(att);
-            thread.start();
-            threadONp1.add(thread);
-            attacchiONp1.add(att);
-            System.out.println(Arrays.toString(attacchiONp1.get(0).getBarili()));
-        }
-        System.out.println("----------------------------------");
-    }
-
-    public static void inizMatricep2(){
-        for (int i = 0; i < 3; i++) {
-            Attacco att = new Attacco();
-            Thread thread = new Thread(att);
-            thread.start();
-            threadONp2.add(thread);
-            attacchiONp2.add(att);
-            System.out.println(Arrays.toString(attacchiONp2.get(0).getBarili()));
-        }
-        System.out.println("----------------------------------");
-    }
-
-    public static void addRigap1(){
-        Attacco att = new Attacco();
-        Thread thread = new Thread(att);
-        thread.start();
-        threadONp1.add(thread);
-
-        if(attacchiONp1.size() == 4){
-            threadONp1.get(0).interrupt();
-            threadONp1.remove(0);
-            attacchiONp1.remove(0);
-        }
-
-        attacchiONp1.add(att);
-
-    }
-
-    public static void addRigap2(){
-        Attacco att = new Attacco();
-        Thread thread = new Thread(att);
-        thread.start();
-        threadONp2.add(thread);
-
-        if(attacchiONp2.size() == 4){
-            threadONp2.get(0).interrupt();
-            threadONp2.remove(0);
-            attacchiONp2.remove(0);
-        }
-
-        attacchiONp2.add(att);
-
-    }
-
-    public static void checkDannop1(Player p){
-        int[] barili = attacchiONp1.get(0).getBarili();
-        if(barili[p.getPos()] == 0){
+    public void checkDanno(Player p) {
+        int[] barili = p.getAttacchiON().getFirst().getBarili();
+        if (barili[p.getPos()] == 0) {
             danno(p);
         }
     }
 
-    public static void checkDannop2(Player p){
-        int[] barili = attacchiONp2.get(0).getBarili();
-        if(barili[p.getPos()] == 0){
-            danno(p);
-        }
-    }
-
-    public static void danno(Player p){
+    public void danno(Player p) {
         int health = p.getHealth();
-
-        if(health == 1){
+        if (health - 1 == 0) {
             stop(p);
         } else {
             p.decreaseHealth();
@@ -129,11 +110,50 @@ public class Model {
         }
     }
 
-    private static void stop(Player p) {
-        System.out.println(p.getName() + " Hai perso :(");
-        System.exit(0);
+    private void stop(Player p) {
+        System.out.println(posto + ". [" + p.getName() + "] | Salti -> " + p.getHops());
+        posto--;
+        if (p.getName().equals("p1")) {
+            p1t.interrupt();
+            game.removeListener(c1);
+        } else {
+            p2t.interrupt();
+            game.removeListener(c2);
+        }
+        if (posto == 0) {
+            System.exit(0);
+        }
     }
 
+    public void setPlayer1(Player p1) {
+        this.p1 = p1;
+        p1t = new Thread(p1);
+        posto++;
+    }
+
+    public void setPlayer2(Player p2) {
+        this.p2 = p2;
+        p2t = new Thread(p2);
+        posto++;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
+    }
+
+    public void setControllerP1(ControllerP1 c1){
+        this.c1 = c1;
+    }
+
+    public void setControllerP2(ControllerP2 c2){
+        this.c2 = c2;
+    }
+
+    public void setGameON() {
+        gameON = true;
+    }
+
+    public void close() {
+        game.dispose();
+    }
 }
-
-
