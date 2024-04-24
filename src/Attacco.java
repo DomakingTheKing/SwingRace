@@ -50,19 +50,27 @@ public class Attacco {
     public void updateMatrice() {
         int[][] newAttacchi = new int[4][4];
 
-        // Abbassa le righe di 1
-        for (int i = 1; i < attacchi.length; i++) {
-            newAttacchi[i] = attacchi[i - 1];
+        // Shift rows down
+        if(!expanded){
+            for (int i = 1; i <= attacchi.length; i++) {
+                newAttacchi[i] = attacchi[i - 1];
+            }
+        } else {
+            for (int i = 1; i < attacchi.length; i++) {
+                newAttacchi[i] = attacchi[i - 1];
+            }
         }
 
-        // Genera nuova riga
+
+        // Generate new row
         boolean scatolaCheck = false;
-        for (int j = 0; j < newAttacchi[0].length; j++) {
-            int rand = (int) (Math.random()*2);
-            if(rand == 1){
+        for (int j = 0; j < 4; j++) {
+            int randOst = (int) (Math.random()*2);
+            int randPos = (int) (Math.random()*4);
+            if(randOst == 1){
                 scatolaCheck = true;
             }
-            newAttacchi[0][j] = rand;
+            newAttacchi[0][randPos] = randOst;
         }
 
         if(!scatolaCheck){
@@ -70,8 +78,10 @@ public class Attacco {
             newAttacchi[0][rand] = 1;
         }
 
-        // Aggiorna la matrice originale
+        // Update the original matrix
         attacchi = newAttacchi;
+
+        System.out.println(print());
     }
 
     public int[][] getAttacchi(){

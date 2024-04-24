@@ -170,7 +170,7 @@ public class Game extends JFrame implements ViewInterface{
                 row.add(ostacolo);
             }
 
-            jpOstacoli.add(row, 0);
+            jpOstacoli.add(row);
         }
 
         repaint();

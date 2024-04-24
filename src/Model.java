@@ -15,7 +15,9 @@ public class Model {
     }
 
     public void checkDanno(Player p) {
-        int[] barili = p.getAttacco().getAttacchi()[0];
+        int index = (p.getAttacco().getExpanded()) ? p.getAttacco().getAttacchi().length-2 : p.getAttacco().getAttacchi().length-1;
+        int[] barili = p.getAttacco().getAttacchi()[index];
+        //System.out.println("Controllato: " + Arrays.toString(barili));
         if (barili[p.getPos()] == 0) {
             danno(p);
         }
