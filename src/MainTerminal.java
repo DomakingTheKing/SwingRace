@@ -3,20 +3,15 @@ import java.util.Scanner;
 
 public class MainTerminal {
     public static void main(String[] args) throws IOException, InterruptedException {
-        Player p1 = new Player(1);
-
         Model model = new Model();
-        p1.setModel(model);
 
-        model.setPlayer1(p1);
+        Player p1 = new Player(1, model);
 
-        p1.startP();
+        model.setNPlayer(1);
 
-        ControllerP1 c1 = new ControllerP1(p1);
-        c1.setModel(model);
+        //model.refreshMatrice(p1);
 
         model.print(p1);
-        model.setGameON();
 
         Scanner scn = new Scanner(System.in);
 
@@ -24,7 +19,9 @@ public class MainTerminal {
             System.out.println("Insersci mossa: ");
             int i = scn.nextInt();
             p1.setPos(i);
-            model.addRiga(p1);
+            p1.incrementHops();
+            //model.refreshMatrice(p1);
+            model.checkDanno(p1);
        }
 
     }

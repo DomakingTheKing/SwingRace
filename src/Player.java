@@ -3,37 +3,24 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Player implements Runnable {
+public class Player{
 
     private final String name;
     private int health = 3;
     private int pos = 0;
     private int hops = 0;
-    private List<Attacco> attacchiON;
-    private List<Thread> threadON;
-    private ControllerP1 c1;
-    private ControllerP2 c2;
     private Model model;
+    private Attacco attacco;
 
-    public Player(JFrame JFMain, int player){
-        ControllerP1 keyListener0 = new ControllerP1(this);
-        JFMain.addKeyListener(keyListener0);
-        model.inizMatrice(this);
-        this.name = "p1";
-
-        threadON = Collections.synchronizedList(new ArrayList<Thread>());
-        attacchiON = Collections.synchronizedList(new ArrayList<Attacco>());
-    }
-
-    public Player(int player){
+    public Player(int player, Model model){
         if(player == 1){
             this.name = "p1";
         } else {
             this.name = "p2";
         }
 
-        threadON = Collections.synchronizedList(new ArrayList<Thread>());
-        attacchiON = Collections.synchronizedList(new ArrayList<Attacco>());
+        this.model = model;
+        this.attacco = new Attacco();
     }
 
     public void setPos(int pos){
@@ -64,27 +51,8 @@ public class Player implements Runnable {
         hops++;
     }
 
-    public void setModel(Model model){
-        this.model = model;
-    }
-
-    public void startP(){
-        model.inizMatrice(this);
-    }
-
-
-    public List<Attacco> getAttacchiON(){
-        return attacchiON;
-    }
-
-    public List<Thread> getThreadON(){
-        return threadON;
-    }
-
-
-    @Override
-    public void run() {
-
+    public Attacco getAttacco(){
+        return attacco;
     }
 
 }
