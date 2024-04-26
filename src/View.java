@@ -7,7 +7,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-public class Game extends JFrame implements ViewInterface{
+public class View extends JFrame implements ViewInterface{
 
     // Costanti
     private static final int MAX_ROWS = 4;
@@ -23,7 +23,7 @@ public class Game extends JFrame implements ViewInterface{
 
     Model model;
 
-    public Game() throws IOException {
+    public View() throws IOException {
         initialize();
         createLayout();
 
@@ -193,17 +193,18 @@ public class Game extends JFrame implements ViewInterface{
 
     private JLabel createOstacolo(int i, int j, Player p) {
         JLabel ostacolo = new JLabel();
-        //ostacolo.setBorder(new LineBorder(Color.CYAN, 5));
         ostacolo.setName("ostacoloRow" + i + "box" + j);
         ostacolo.setBounds((ROW_HEIGHT*j)+(j*25), 0, ROW_HEIGHT, ROW_HEIGHT);
-        if (p.getAttacco().getAttacchi()[i][j] == 1){
-            ostacolo.setIcon(new ImageIcon(IMAGES_PATH + "Crate.png"));
-        } else {
+
+        if (p.getAttacco().getKilledObstacles().contains(new Point(i, j))) {
+            ostacolo.setIcon(new ImageIcon(IMAGES_PATH + "KilledCroco.png"));
+        } else if (p.getAttacco().getAttacchi()[i][j] == 0) {
             ostacolo.setIcon(new ImageIcon(IMAGES_PATH + "Croco.png"));
+        } else {
+            ostacolo.setIcon(new ImageIcon(IMAGES_PATH + "Crate.png"));
         }
+
         ostacolo.setOpaque(false);
         return ostacolo;
     }
-
-
 }

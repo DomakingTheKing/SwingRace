@@ -5,7 +5,7 @@ public class MainTerminal {
     public static void main(String[] args) throws IOException, InterruptedException {
         Model model = new Model();
 
-        Player p1 = new Player(1, model);
+        Player p1 = new Player(1);
 
         model.setNPlayer(1);
 

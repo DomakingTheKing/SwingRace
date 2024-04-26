@@ -1,6 +1,11 @@
+import java.awt.*;
+import java.util.ArrayList;
+
 public class Attacco {
     private int[][] attacchi; // scatola = 1, coccodrillo = 0
     private boolean expanded;
+    private ArrayList<Point> killedObstacles = new ArrayList<>();
+
 
     public Attacco() {
         attacchi = new int[3][4];
@@ -36,11 +41,11 @@ public class Attacco {
         int[][] newAttacchi = new int[4][4];
 
         // Shift rows down
-        for (int i = 1; i < newAttacchi.length; i++) {
-            newAttacchi[i] = attacchi[i - 1];
+        for (int i = 0; i < attacchi.length; i++) {
+            System.arraycopy(attacchi[i], 0, newAttacchi[i + 1], 0, attacchi[i].length);
         }
 
-        // Generate new row
+        // Generate new row at the top
         generateRow(0);
 
         // Update attacchi
@@ -51,37 +56,23 @@ public class Attacco {
         int[][] newAttacchi = new int[4][4];
 
         // Shift rows down
-        if(!expanded){
-            for (int i = 1; i <= attacchi.length; i++) {
-                newAttacchi[i] = attacchi[i - 1];
-            }
-        } else {
-            for (int i = 1; i < attacchi.length; i++) {
-                newAttacchi[i] = attacchi[i - 1];
-            }
+        for (int i = 0; i < attacchi.length; i++) {
+            System.arraycopy(attacchi[i], 0, newAttacchi[i + 1], 0, attacchi[i].length);
         }
 
-
-        // Generate new row
-        boolean scatolaCheck = false;
-        for (int j = 0; j < 4; j++) {
-            int randOst = (int) (Math.random()*2);
-            int randPos = (int) (Math.random()*4);
-            if(randOst == 1){
-                scatolaCheck = true;
-            }
-            newAttacchi[0][randPos] = randOst;
-        }
-
-        if(!scatolaCheck){
-            int rand = (int) (Math.random()*4);
-            newAttacchi[0][rand] = 1;
-        }
+        // Generate new row at the top
+        generateRow(0);
 
         // Update the original matrix
         attacchi = newAttacchi;
 
-        System.out.println(print());
+        for (Point point : killedObstacles) {
+            if (point.x < attacchi.length - 1) {
+                point.x++;
+            }
+        }
+
+        killedObstacles.removeIf(point -> point.x >= attacchi.length);
     }
 
     public int[][] getAttacchi(){
@@ -90,6 +81,14 @@ public class Attacco {
 
     public boolean getExpanded(){
         return expanded;
+    }
+
+    public ArrayList<Point> getKilledObstacles() {
+        return killedObstacles;
+    }
+
+    public void killCroco(int x, int y) {
+        killedObstacles.add(new Point(x, y));
     }
 
     public String print() {

@@ -4,8 +4,8 @@ public class Main {
     public static void main(String[] args) throws IOException {
         Model model = new Model();
 
-        Player p1 = new Player(1, model);
-        Player p2 = new Player(2, model);
+        Player p1 = new Player(1);
+        Player p2 = new Player(2);
 
         model.setNPlayer(2);
 
@@ -20,15 +20,15 @@ public class Main {
         model.c1 = c1;
         model.c2 = c2;
 
-        Game game = new Game();
+        View view = new View();
 
-        game.addKeyListener(c1);
-        game.addKeyListener(c2);
+        view.addKeyListener(c1);
+        view.addKeyListener(c2);
 
-        game.setModel(model);
-        model.game = game;
+        view.setModel(model);
+        model.view = view;
 
-        game.refreshMatrice(p1);
-        game.refreshMatrice(p2);
+        view.refreshMatrice(p1);
+        view.refreshMatrice(p2);
     }
 }

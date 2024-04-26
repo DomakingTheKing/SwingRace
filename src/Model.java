@@ -1,14 +1,15 @@
-import java.util.Arrays;
-
 public class Model {
 
-    private int posto = 0;
+    private int posto;
 
-    public Game game;
+    public View view;
     public Controller c1, c2;
 
+    public Model(){
+        posto = 0;
+    }
+
     public void print(Player p) {
-        boolean firstRow = false;
         System.out.println(p.getName() + ":");
         System.out.println(p.getAttacco().print());
         System.out.println("----------------------------------");
@@ -17,9 +18,9 @@ public class Model {
     public void checkDanno(Player p) {
         int index = (p.getAttacco().getExpanded()) ? p.getAttacco().getAttacchi().length-2 : p.getAttacco().getAttacchi().length-1;
         int[] barili = p.getAttacco().getAttacchi()[index];
-        //System.out.println("Controllato: " + Arrays.toString(barili));
         if (barili[p.getPos()] == 0) {
             danno(p);
+            p.getAttacco().killCroco(index, p.getPos());
         }
     }
 
@@ -37,9 +38,9 @@ public class Model {
         System.out.println(posto + ". [" + p.getName() + "] | Salti -> " + p.getHops());
         posto--;
         if (p.getName().equals("p1")) {
-            game.removeListener(c1);
+            view.removeListener(c1);
         } else {
-            game.removeListener(c2);
+            view.removeListener(c2);
         }
         if (posto == 0) {
             close();
@@ -51,6 +52,6 @@ public class Model {
     }
 
     public void close() {
-        game.dispose();
+        view.dispose();
     }
 }

@@ -1,25 +1,22 @@
-import javax.swing.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 public class Player{
 
     private final String name;
-    private int health = 3;
-    private int pos = 0;
-    private int hops = 0;
-    private Model model;
+    private int health;
+    private int pos;
+    private int hops;
     private Attacco attacco;
 
-    public Player(int player, Model model){
+    public Player(int player){
+        health = 3;
+        pos = -1;
+        hops = 0;
+
         if(player == 1){
             this.name = "p1";
         } else {
             this.name = "p2";
         }
 
-        this.model = model;
         this.attacco = new Attacco();
     }
 
