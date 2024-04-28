@@ -1,8 +1,12 @@
-public class Model {
+import javax.sound.sampled.*;
+import java.io.File;
+import java.io.IOException;
+
+public class Model implements ViewInterface{
 
     private int posto;
 
-    public View view;
+    public GameView gameView;
     public Controller c1, c2;
 
     public Model(){
@@ -16,15 +20,27 @@ public class Model {
     }
 
     public void checkDanno(Player p) {
+
+        playClip("jump.wav");
+
         int index = (p.getAttacco().getExpanded()) ? p.getAttacco().getAttacchi().length-2 : p.getAttacco().getAttacchi().length-1;
+
         int[] barili = p.getAttacco().getAttacchi()[index];
+
         if (barili[p.getPos()] == 0) {
             danno(p);
-            p.getAttacco().killCroco(index, p.getPos());
+
+            if (p.getAttacco().getExpanded()){
+                p.getAttacco().killCroco(index, p.getPos());
+            } else{
+                p.getAttacco().killCroco(index+1, p.getPos());
+            }
         }
     }
 
     public void danno(Player p) {
+        playClip("Damage.wav");
+
         int health = p.getHealth();
         if (health == 0) {
             stop(p);
@@ -38,12 +54,14 @@ public class Model {
         System.out.println(posto + ". [" + p.getName() + "] | Salti -> " + p.getHops());
         posto--;
         if (p.getName().equals("p1")) {
-            view.removeListener(c1);
+            gameView.removeListener(c1);
+            gameView.gameOverScreen(p);
         } else {
-            view.removeListener(c2);
+            gameView.removeListener(c2);
+            gameView.gameOverScreen(p);
         }
         if (posto == 0) {
-            close();
+            close(p);
         }
     }
 
@@ -51,7 +69,25 @@ public class Model {
         posto += i;
     }
 
-    public void close() {
-        view.dispose();
+    public void close(Player p) {
+        gameView.dispose();
+        GameOverView gameOverView = new GameOverView();
+        gameOverView.setWinner(p.getName());
+    }
+
+    public void playClip(String fileName) {
+        new Thread(() -> {
+            try {
+                File audioFile = new File(SOUNDS_PATH + fileName);
+                AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
+                Clip clip = AudioSystem.getClip();
+                clip.open(audioStream);
+                clip.start();
+                Thread.sleep(1000);
+                clip.close();
+            } catch (UnsupportedAudioFileException | IOException | LineUnavailableException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 }

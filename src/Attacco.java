@@ -39,43 +39,34 @@ public class Attacco {
     public void expandMatrice() {
         expanded = true;
         int[][] newAttacchi = new int[4][4];
-
-        // Shift rows down
+        // Shift rows downa
         for (int i = 0; i < attacchi.length; i++) {
             System.arraycopy(attacchi[i], 0, newAttacchi[i + 1], 0, attacchi[i].length);
         }
 
+        attacchi = newAttacchi;
+
         // Generate new row at the top
         generateRow(0);
 
-        // Update attacchi
-        attacchi = newAttacchi;
     }
 
     public void updateMatrice() {
-        int[][] newAttacchi = new int[4][4];
-
-        // Shift rows down
-        for (int i = 0; i < attacchi.length; i++) {
-            System.arraycopy(attacchi[i], 0, newAttacchi[i + 1], 0, attacchi[i].length);
+        for (int i = attacchi.length-2; i >= 0 ; i--) {
+            System.arraycopy(attacchi[i], 0, attacchi[i + 1], 0, attacchi[i].length);
         }
 
-        // Generate new row at the top
         generateRow(0);
 
-        // Update the original matrix
-        attacchi = newAttacchi;
-
         for (Point point : killedObstacles) {
-            if (point.x < attacchi.length - 1) {
-                point.x++;
-            }
+            point.x++;
         }
 
         killedObstacles.removeIf(point -> point.x >= attacchi.length);
     }
 
     public int[][] getAttacchi(){
+        //System.out.println("ciao"+print());
         return attacchi;
     }
 

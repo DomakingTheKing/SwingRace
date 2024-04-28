@@ -7,7 +7,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-public class View extends JFrame implements ViewInterface{
+public class GameView extends JFrame implements ViewInterface{
 
     // Costanti
     private static final int MAX_ROWS = 4;
@@ -23,7 +23,7 @@ public class View extends JFrame implements ViewInterface{
 
     Model model;
 
-    public View() throws IOException {
+    public GameView() throws IOException {
         initialize();
         createLayout();
 
@@ -171,6 +171,9 @@ public class View extends JFrame implements ViewInterface{
             }
 
             jpOstacoli.add(row);
+            if(i == v-1){
+                movePlayer(p, row);
+            }
         }
 
         repaint();
@@ -207,4 +210,47 @@ public class View extends JFrame implements ViewInterface{
         ostacolo.setOpaque(false);
         return ostacolo;
     }
+
+    private void movePlayer(Player p, JPanel row){
+        JLabel playerLabel;
+        JPanel playerColumn;
+
+        if(p.getName().equals("p1")){
+            playerLabel = jlPlayer1;
+            playerColumn = jpLeftColumn;
+        } else {
+            playerLabel = jlPlayer2;
+            playerColumn = jpRightColumn;
+        }
+
+        if(p.getPos() != -1){
+            playerLabel.setLocation(row.getX() + ((row.getComponent(p.getPos()).getWidth())/2)-12 + row.getComponent(p.getPos()).getX(),
+                                    row.getY() + ((row.getComponent(p.getPos()).getWidth())/2)-12);
+        }
+        playerColumn.setComponentZOrder(playerLabel, 0);
+    }
+
+    public void gameOverScreen(Player p){
+        JLabel playerLabel;
+        JPanel playerColumn;
+
+        if(p.getName().equals("p1")){
+            playerLabel = jlPlayer1;
+            playerColumn = jpLeftColumn;
+        } else {
+            playerLabel = jlPlayer2;
+            playerColumn = jpRightColumn;
+        }
+
+        JLabel jlGameOver = new JLabel();
+        jlGameOver.setLocation(0,0);
+        jlGameOver.setSize(playerColumn.getWidth(), playerColumn.getHeight());
+        jlGameOver.setIcon(new ImageIcon(IMAGES_PATH + "DiedFG.png"));
+
+        playerColumn.add(jlGameOver);
+        playerColumn.setComponentZOrder(jlGameOver, 0);
+        playerColumn.setComponentZOrder(playerLabel, 1);
+        playerColumn.repaint();
+    }
+
 }

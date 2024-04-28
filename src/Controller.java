@@ -24,13 +24,14 @@ public class Controller implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
+
         int keyCode = e.getKeyCode();
 
         if (!started && isKeyValid(keyCode)) {
             started = true;
 
-            model.view.removeSalvagente(player);
-            model.view.repaint();
+            model.gameView.removeSalvagente(player);
+            model.gameView.repaint();
         }
 
         if (started && isKeyValid(keyCode)) {
@@ -40,17 +41,19 @@ public class Controller implements KeyListener {
 
                 player.incrementHops();
                 model.checkDanno(player);
-                player.getAttacco().updateMatrice();
 
                 if (!expanded){
                     player.getAttacco().expandMatrice();
                     expanded = true;
+                }else{
+                    player.getAttacco().updateMatrice();
                 }
 
-                model.view.refreshMatrice(player);
+                model.gameView.refreshMatrice(player);
             } else {
                 System.out.println("Invalid key code: " + keyCode);
             }
+
         }
     }
 
