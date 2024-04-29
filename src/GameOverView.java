@@ -7,7 +7,7 @@ import java.io.IOException;
 
 public class GameOverView extends JFrame implements ViewInterface{
 
-    private JLabel jlGameOver, jlPlayer1, jlPlayer2;
+    private JLabel jlGameOver, jlPlayer1, jlPlayer2, jlWinnerName, jlLooserName;
     private JLayeredPane layeredPane;
     private JButton exitButton;
 
@@ -26,20 +26,37 @@ public class GameOverView extends JFrame implements ViewInterface{
     private void initialize(){
         layeredPane = getLayeredPane();
         jlGameOver = new JLabel(new ImageIcon(IMAGES_PATH + "GameOverBG.png"));
+
         jlPlayer1 = new JLabel();
         jlPlayer2 = new JLabel();
 
-        exitButton = new JButton("ESCI");
+        jlWinnerName = new JLabel();
+        jlLooserName = new JLabel();
+
+        exitButton = new JButton();
     }
 
     private void createLayout() {
         jlGameOver.setBounds(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
         layeredPane.add(jlGameOver, JLayeredPane.DEFAULT_LAYER);
 
-        exitButton.setBounds(WINDOW_WIDTH - 215, WINDOW_HEIGHT - 125, 200, 100);
-        exitButton.setBackground(Color.WHITE);
+        exitButton.setBounds(WINDOW_WIDTH - 415, WINDOW_HEIGHT - 240, 400, 200);
+        exitButton.setText("EXIT");
+        exitButton.setFont(Model.getFont("Filled.ttf", 80));
+        exitButton.setForeground(new Color(220, 14, 14));
         exitButton.addActionListener(e -> dispose());
+        exitButton.setBackground(Color.WHITE);
+        exitButton.setBorderPainted(false);
         layeredPane.add(exitButton, JLayeredPane.PALETTE_LAYER);
+
+        jlWinnerName.setBounds(325, 70, 300, 240);
+        jlWinnerName.setFont(Model.getFont("Filled.ttf", 120));
+        jlWinnerName.setForeground(new Color(241, 241, 241));
+        layeredPane.add(jlWinnerName, JLayeredPane.PALETTE_LAYER);
+
+        jlLooserName.setBounds(860, 285, 200, 140);
+        jlLooserName.setFont(Model.getFont("Filled.ttf", 80));
+        layeredPane.add(jlLooserName, JLayeredPane.PALETTE_LAYER);
     }
 
     // Get the image of the player
@@ -68,8 +85,10 @@ public class GameOverView extends JFrame implements ViewInterface{
     public void setWinner(String winner) {
         // Looser
         setPlayerImage(winner.equals("p1") ? "p2" : "p1", 830, 425, 192, 192);
+        jlLooserName.setText(winner.equals("p1") ? "P2" : "P1");
         // Winner
         setPlayerImage(winner, 240, 415, 384, 384);
+        jlWinnerName.setText(winner.equals("p1") ? "P1" : "P2");
         // Crown
         setCrown();
     }
@@ -80,4 +99,6 @@ public class GameOverView extends JFrame implements ViewInterface{
         jlCrown.setBounds(240+32, 415-(320/2)+10, 320, 320);
         layeredPane.add(jlCrown, JLayeredPane.MODAL_LAYER);
     }
+
+
 }

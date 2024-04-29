@@ -1,6 +1,6 @@
 import javax.imageio.ImageIO;
+import javax.sound.sampled.*;
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
@@ -19,6 +19,8 @@ public class GameView extends JFrame implements ViewInterface{
     private JPanel jpLeftColumn, jpRightColumn, jpTopBar, jpBottomBar;
     private JLabel jlPlayer1, jlPlayer2, jlSalvaGenteP1, jlSalvaGenteP2;
 
+    private Clip ost;
+
     public JPanel jpOstacoliP1, jpOstacoliP2, jpHeartsP1, jpHeartsP2;
 
     Model model;
@@ -32,6 +34,8 @@ public class GameView extends JFrame implements ViewInterface{
         setLocationRelativeTo(null);
         setVisible(true);
         setResizable(false);
+
+        playOST("BG_Ost.wav");
     }
 
     private void initialize() throws IOException {
@@ -67,8 +71,8 @@ public class GameView extends JFrame implements ViewInterface{
 
         jpOstacoliP1 = new JPanel();
         jpOstacoliP2 = new JPanel();
-        jpHeartsP1 = new JPanel();
-        jpHeartsP2 = new JPanel();
+        jpHeartsP1 = new JPanel(new GridLayout(1,3));
+        jpHeartsP2 = new JPanel(new GridLayout(1,3));
 
         jlPlayer1 = new JLabel(new ImageIcon(IMAGES_PATH + "Player1.png"));
         jlPlayer2 = new JLabel(new ImageIcon(IMAGES_PATH + "Player2.png"));
@@ -127,14 +131,18 @@ public class GameView extends JFrame implements ViewInterface{
     }
 
     private void topBar(){
-        jpHeartsP1.setBounds(150,0,300,100);
+        jpHeartsP1.setBounds(170,0,300,100);
         jpHeartsP2.setBounds(150 + (WINDOW_WIDTH/2),0,300,100);
 
-        jpHeartsP1.setBorder(new LineBorder(Color.RED, 5));
-        jpHeartsP2.setBorder(new LineBorder(Color.RED, 5));
+        jpHeartsP1.setOpaque(false);
+        jpHeartsP2.setOpaque(false);
 
         jpTopBar.add(jpHeartsP1);
         jpTopBar.add(jpHeartsP2);
+
+        // Move jpHeartsP1 and jpHeartsP2 to the top
+        jpTopBar.setComponentZOrder(jpHeartsP1, 0);
+        jpTopBar.setComponentZOrder(jpHeartsP2, 0);
     }
 
 
@@ -175,6 +183,8 @@ public class GameView extends JFrame implements ViewInterface{
                 movePlayer(p, row);
             }
         }
+
+        refreshHearts(p);
 
         repaint();
         revalidate();
@@ -230,6 +240,22 @@ public class GameView extends JFrame implements ViewInterface{
         playerColumn.setComponentZOrder(playerLabel, 0);
     }
 
+    public void refreshHearts(Player p){
+        JPanel jpHearts = p.getName().equals("p1") ? jpHeartsP1 : jpHeartsP2;
+        jpHearts.removeAll();
+
+        int health = p.getHealth();
+        if (health != 0) {
+            for (int i = 0; i < health; i++) {
+                JLabel heart = new JLabel(new ImageIcon(IMAGES_PATH + "Heart.png"));
+                jpHearts.add(heart);
+            }
+        }
+
+        jpHearts.repaint();
+        jpHearts.revalidate();
+    }
+
     public void gameOverScreen(Player p){
         JLabel playerLabel;
         JPanel playerColumn;
@@ -251,6 +277,24 @@ public class GameView extends JFrame implements ViewInterface{
         playerColumn.setComponentZOrder(jlGameOver, 0);
         playerColumn.setComponentZOrder(playerLabel, 1);
         playerColumn.repaint();
+    }
+
+    private void playOST(String fileName) {
+        new Thread(() -> {
+            try {
+                File audioFile = new File(MUSIC_PATH + fileName);
+                AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
+                ost = AudioSystem.getClip();
+                ost.open(audioStream);
+                ost.start();
+            } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    public Clip getOST(){
+        return ost;
     }
 
 }
