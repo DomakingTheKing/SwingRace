@@ -20,6 +20,7 @@ public class GameOverView extends JFrame implements ViewInterface{
         setLocationRelativeTo(null);
         setVisible(true);
         setResizable(false);
+        setTitle("SwingRace");
     }
 
     // In your initialize method
@@ -44,7 +45,17 @@ public class GameOverView extends JFrame implements ViewInterface{
         exitButton.setText("EXIT");
         exitButton.setFont(Model.getFont("Filled.ttf", 80));
         exitButton.setForeground(new Color(220, 14, 14));
-        exitButton.addActionListener(e -> dispose());
+        exitButton.addActionListener(e -> {
+            Model.playClip("Select.wav");
+
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException ex) {
+                throw new RuntimeException(ex);
+            }
+
+            dispose();
+        });
         exitButton.setBackground(Color.WHITE);
         exitButton.setBorderPainted(false);
         layeredPane.add(exitButton, JLayeredPane.PALETTE_LAYER);

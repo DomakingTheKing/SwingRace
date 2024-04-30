@@ -26,6 +26,9 @@ public class GameView extends JFrame implements ViewInterface{
     Model model;
 
     public GameView() throws IOException {
+        ost = Model.playOST("BG_Game_Ost.wav");
+        ost.start();
+
         initialize();
         createLayout();
 
@@ -34,8 +37,7 @@ public class GameView extends JFrame implements ViewInterface{
         setLocationRelativeTo(null);
         setVisible(true);
         setResizable(false);
-
-        playOST("BG_Ost.wav");
+        setTitle("SwingRace");
     }
 
     private void initialize() throws IOException {
@@ -277,20 +279,6 @@ public class GameView extends JFrame implements ViewInterface{
         playerColumn.setComponentZOrder(jlGameOver, 0);
         playerColumn.setComponentZOrder(playerLabel, 1);
         playerColumn.repaint();
-    }
-
-    private void playOST(String fileName) {
-        new Thread(() -> {
-            try {
-                File audioFile = new File(MUSIC_PATH + fileName);
-                AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
-                ost = AudioSystem.getClip();
-                ost.open(audioStream);
-                ost.start();
-            } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-                e.printStackTrace();
-            }
-        }).start();
     }
 
     public Clip getOST(){

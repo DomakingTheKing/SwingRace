@@ -20,15 +20,6 @@ public class Main {
         model.c1 = c1;
         model.c2 = c2;
 
-        GameView gameView = new GameView();
-
-        gameView.addKeyListener(c1);
-        gameView.addKeyListener(c2);
-
-        gameView.setModel(model);
-        model.gameView = gameView;
-
-        gameView.refreshMatrice(p1);
-        gameView.refreshMatrice(p2);
+        GameMenuView gameMenuView = new GameMenuView(p1, p2, model);
     }
 }

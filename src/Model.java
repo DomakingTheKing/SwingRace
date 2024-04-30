@@ -103,4 +103,18 @@ public class Model implements ViewInterface{
             return null;
         }
     }
+
+    public static Clip playOST(String fileName) {
+        Clip ost = null;
+        try {
+            File audioFile = new File(MUSIC_PATH + fileName);
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
+            ost = AudioSystem.getClip();
+            ost.open(audioStream);
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+            e.printStackTrace();
+        }
+
+        return ost;
+    }
 }
